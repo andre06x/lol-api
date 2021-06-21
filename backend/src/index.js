@@ -11,136 +11,144 @@ app.use(cors());
 app.listen(3333);
 
 app.get("/", (req, res) => {
-    res.send("hello world")
+  res.send("hello world")
 });
 
-app.get('/summoner/', (req,res) => {
-    return res.json([
-        {login: "ZarackWF"},
-        {login: "aaaa"},
-        {login: "Liginha"},
-        {login: "rih21"}
-    ]);
+app.get('/summoner/', (req, res) => {
+  return res.json([
+    { login: "ZarackWF" },
+    { login: "aaaa" },
+    { login: "Liginha" },
+    { login: "rih21" }
+  ]);
 });
 
-app.get('/summonner/:summonerName', async (req,res) => {
-    const { summonerName } = req.params;
+app.get('/summonner/:summonerName', async (req, res) => {
+  const { summonerName } = req.params;
 
-    const summonerResponse = await axios.get(`${process.env.LOL_URL}/lol/summoner/v4/summoners/by-name/${summonerName}`, {
-        headers: { 'X-Riot-Token': process.env.LOL_KEY }
-    })
+  const summonerResponse = await axios.get(`${process.env.LOL_URL}/lol/summoner/v4/summoners/by-name/${summonerName}`, {
+    headers: { 'X-Riot-Token': process.env.LOL_KEY }
+  })
 
-    const { id, profileIconId, summonerLevel, puuid } = summonerResponse.data;
+  const { id, profileIconId, summonerLevel, puuid } = summonerResponse.data;
 
-    const responseRanked = await axios.get(`${process.env.LOL_URL}/lol/league/v4/entries/by-summoner/${id}`,
-        { headers: { 'X-Riot-Token': process.env.LOL_KEY } }
-    )
+  const responseRanked = await axios.get(`${process.env.LOL_URL}/lol/league/v4/entries/by-summoner/${id}`,
+    { headers: { 'X-Riot-Token': process.env.LOL_KEY } }
+  )
 
-    let l0, l1;
-    if (responseRanked.data[0]) {
-        if(responseRanked.data.find(f => f.queueType === 'RANKED_SOLO_5x5')){
-            l0 = [];
-            l0.push(responseRanked.data.find(f => f.queueType === 'RANKED_SOLO_5x5'));
-        };
-        if(responseRanked.data.find(f => f.queueType === 'RANKED_FLEX_SR' )){
-            l1 = [];
-            l1.push(responseRanked.data.find(f => f.queueType === 'RANKED_FLEX_SR' ));
-        };
-    }
+  let l0, l1;
+  if (responseRanked.data[0]) {
+    if (responseRanked.data.find(f => f.queueType === 'RANKED_SOLO_5x5')) {
+      l0 = [];
+      l0.push(responseRanked.data.find(f => f.queueType === 'RANKED_SOLO_5x5'));
+    };
+    if (responseRanked.data.find(f => f.queueType === 'RANKED_FLEX_SR')) {
+      l1 = [];
+      l1.push(responseRanked.data.find(f => f.queueType === 'RANKED_FLEX_SR'));
+    };
+  }
 
-    return res.send({
-        l0,
-        l1,
-        // ligas,
-        summonerLevel,
-        iconUrl: `${process.env.LOL_ICONS}/${profileIconId}.png`,
-    })
+  return res.send({
+    l0,
+    l1,
+    puuid,
+    summonerLevel,
+    iconUrl: `${process.env.LOL_ICONS}/${profileIconId}.png`,
+  })
 });
 
 app.get('/summoner/:summonerName', async (req, res) => {
-    const { summonerName } = req.params;
+  const { summonerName } = req.params;
 
-    const summonerResponse = await axios.get(`${process.env.LOL_URL}/lol/summoner/v4/summoners/by-name/${summonerName}`, {
-        headers: { 'X-Riot-Token': process.env.LOL_KEY }
-    })
+  const summonerResponse = await axios.get(`${process.env.LOL_URL}/lol/summoner/v4/summoners/by-name/${summonerName}`, {
+    headers: { 'X-Riot-Token': process.env.LOL_KEY }
+  })
 
-    const { id, profileIconId, summonerLevel, puuid } = summonerResponse.data;
+  const { id, profileIconId, summonerLevel, puuid } = summonerResponse.data;
 
-   
-    const responseMatchIds = await axios.get(`${process.env.LOL_URL_AMERICAS}/lol/match/v5/matches/by-puuid/${puuid}/ids`,
+
+  const responseMatchIds = await axios.get(`${process.env.LOL_URL_AMERICAS}/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=10`,
+    { headers: { 'X-Riot-Token': process.env.LOL_KEY } }
+  )
+
+  let dadosPartida = [];
+  let vitoria = 0;
+  try {
+    for (let i = 0; i < responseMatchIds.data.length; i++) {
+      const responseLastMatchs = await axios.get(`${process.env.LOL_URL_AMERICAS}/lol/match/v5/matches/${responseMatchIds.data[i]}`,
         { headers: { 'X-Riot-Token': process.env.LOL_KEY } }
-    )
+      )
 
-    let dadosPartida = [];
-    let vitoria = 0;
-    try {
+      const { gameMode, gameDuration } = responseLastMatchs.data.info;
 
-        for (let i = 0; i < 10; i++) {
-            const responseLastMatchs = await axios.get(`${process.env.LOL_URL_AMERICAS}/lol/match/v5/matches/${responseMatchIds.data[i]}`,
-                { headers: { 'X-Riot-Token': process.env.LOL_KEY } }
-            )
+      let gameMinuteDuration = (gameDuration / 60) + "";
+      gameMinuteDuration = gameMinuteDuration.substring(0, 2) + "m";
 
-            const { gameMode, gameDuration } = responseLastMatchs.data.info;
+      const particpant = responseLastMatchs.data.info.participants.filter(p => p.puuid === puuid)
 
-            let gameMinuteDuration = (gameDuration / 60) + "";
-            gameMinuteDuration = gameMinuteDuration.substring(0, 2) + "m";
 
-            const particpant = responseLastMatchs.data.info.participants.filter(p => p.puuid === puuid)
+      const { 
+        win, 
+        championName,
+        assists,
+        deaths,
+        kills,
+        item0, 
+        item1, 
+        item2, 
+        item3, 
+        item4, 
+        item5, 
+        item6, 
+        totalMinionsKilled,
+        champLevel } = particpant[0];
+      if (win) {
+        vitoria++;
+      }
 
-            if (i == 0) {
-                // console.log(particpant[0]);
-            }
+      let itens = [];
+      itens.push(
+        { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item0}.png` },
+        { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item1}.png` },
+        { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item2}.png` },
+        { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item3}.png` },
+        { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item4}.png` },
+        { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item5}.png` },
+        { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item6}.png` }
 
-            // console.log(particpant);
-            const { win, championName, assists, deaths, kills, item0, item1, item2, item3, item4, item5, item6, totalMinionsKilled, champLevel } = particpant[0];
-            if (win) {
-                vitoria++;
-            }
-
-            let itens = [];
-            itens.push(
-                { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item0}.png` },
-                { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item1}.png` },
-                { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item2}.png` },
-                { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item3}.png` },
-                { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item4}.png` },
-                { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item5}.png` },
-                { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item6}.png` }
-
-            )
-            dadosPartida.push({
-                // gameDuration: gameDuration[0] + gameDuration [1] +"s",
-                totalMinionsKilled,
-                champLevel,
-                gameMode,
-                gameMinuteDuration,
-                win,
-                championName,
-                championIcon: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/champion/${championName}.png`,
-                kills,
-                deaths,
-                assists,
-                itens
-            })
-        }
-    } catch (err) {
-        res.send(err)
+      )
+      dadosPartida.push({
+        // gameDuration: gameDuration[0] + gameDuration [1] +"s",
+        totalMinionsKilled,
+        champLevel,
+        gameMode,
+        gameMinuteDuration,
+        win,
+        championName,
+        championIcon: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/champion/${championName}.png`,
+        kills,
+        deaths,
+        assists,
+        itens
+      })
     }
+  } catch (err) {
+    res.send(err)
+  }
 
-    let mediaDeaths = dadosPartida.reduce((total, d) => total + d.deaths, 0) / 10;
-    let mediaKills = dadosPartida.reduce((total, d) => total + d.kills, 0) / 10;
-    let mediaAssists= dadosPartida.reduce((total, d) => total + d.assists, 0) / 10;
-    let kda10 = ((mediaKills + mediaAssists) / mediaDeaths).toFixed(2);
+  let mediaDeaths = dadosPartida.reduce((total, d) => total + d.deaths, 0) / 10;
+  let mediaKills = dadosPartida.reduce((total, d) => total + d.kills, 0) / 10;
+  let mediaAssists = dadosPartida.reduce((total, d) => total + d.assists, 0) / 10;
+  let kda10 = ((mediaKills + mediaAssists) / mediaDeaths).toFixed(2);
 
-    return res.json({
-        mediaDeaths,
-        mediaKills,
-        mediaAssists,
-        kda10,
-        vitoria,
-        summonerLevel,
-        iconUrl: `${process.env.LOL_ICONS}/${profileIconId}.png`,
-        dadosPartida,
-        // winrate: wins ? ((wins / (wins * losses)) * 100).toFixed(1) : ""
-    })
+  return res.json({
+    mediaDeaths,
+    mediaKills,
+    mediaAssists,
+    kda10,
+    vitoria,
+    summonerLevel,
+    iconUrl: `${process.env.LOL_ICONS}/${profileIconId}.png`,
+    dadosPartida,
+  })
 })
