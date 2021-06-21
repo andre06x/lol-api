@@ -36,21 +36,16 @@ app.get('/summonner/:summonerName', async (req,res) => {
         { headers: { 'X-Riot-Token': process.env.LOL_KEY } }
     )
 
-    var ligas = [];
     let l0, l1;
     if (responseRanked.data[0]) {
-        const { rank, wins, losses, queueType, tier } = await responseRanked.data[0];
-        console.log(responseRanked.data[0]);
-        l0 = responseRanked.data.filter(f => f.queueType === 'RANKED_SOLO_5x5');
-         l1 = responseRanked.data.filter(f => f.queueType === 'RANKED_FLEX_SR');
-         ligas = responseRanked.data.map(r => (
-            {
-                queueType: r.queueType,
-                tier: r.tier,
-                rank: r.rank
-            }
-        ))        
-        
+        if(responseRanked.data.find(f => f.queueType === 'RANKED_SOLO_5x5')){
+            l0 = [];
+            l0.push(responseRanked.data.find(f => f.queueType === 'RANKED_SOLO_5x5'));
+        };
+        if(responseRanked.data.find(f => f.queueType === 'RANKED_FLEX_SR' )){
+            l1 = [];
+            l1.push(responseRanked.data.find(f => f.queueType === 'RANKED_FLEX_SR' ));
+        };
     }
 
     return res.send({
@@ -71,29 +66,7 @@ app.get('/summoner/:summonerName', async (req, res) => {
 
     const { id, profileIconId, summonerLevel, puuid } = summonerResponse.data;
 
-    const responseRanked = await axios.get(`${process.env.LOL_URL}/lol/league/v4/entries/by-summoner/${id}`,
-        { headers: { 'X-Riot-Token': process.env.LOL_KEY } }
-    )
-
-    var ligas = [];
-
-    if (responseRanked.data[0]) {
-        const { rank, wins, losses, queueType, tier } = await responseRanked.data[0];
-         ligas = responseRanked.data.map(r => (
-            {
-                queueType: r.queueType,
-                tier: r.tier,
-                rank: r.rank
-            }
-        ))
-    }
-    // res.json(responseRanked.data.);
-    //     return res.json({
-    //     ligas,
-    //     summonerLevel,
-    //     iconUrl: `${process.env.LOL_ICONS}/${profileIconId}.png`,
-    //     // winrate: wins ? ((wins / (wins * losses)) * 100).toFixed(1) : ""
-    // })
+   
     const responseMatchIds = await axios.get(`${process.env.LOL_URL_AMERICAS}/lol/match/v5/matches/by-puuid/${puuid}/ids`,
         { headers: { 'X-Riot-Token': process.env.LOL_KEY } }
     )
@@ -101,32 +74,6 @@ app.get('/summoner/:summonerName', async (req, res) => {
     let dadosPartida = [];
     let vitoria = 0;
     try {
-
-        // let URL1 = `${process.env.LOL_URL_AMERICAS}/lol/match/v5/matches/${responseMatchIds.data[0]}`;
-        // let URL2 = `${process.env.LOL_URL_AMERICAS}/lol/match/v5/matches/${responseMatchIds.data[1]}`;
-        // let URL3 = `${process.env.LOL_URL_AMERICAS}/lol/match/v5/matches/${responseMatchIds.data[2]}`;
-        // let URL4 = `${process.env.LOL_URL_AMERICAS}/lol/match/v5/matches/${responseMatchIds.data[3]}`;
-        // let URL5 = `${process.env.LOL_URL_AMERICAS}/lol/match/v5/matches/${responseMatchIds.data[4]}`;
-        // let URL6 = `${process.env.LOL_URL_AMERICAS}/lol/match/v5/matches/${responseMatchIds.data[5]}`;
-        // let URL7 = `${process.env.LOL_URL_AMERICAS}/lol/match/v5/matches/${responseMatchIds.data[6]}`;
-        // let URL8 = `${process.env.LOL_URL_AMERICAS}/lol/match/v5/matches/${responseMatchIds.data[7]}`;
-        // let URL9 = `${process.env.LOL_URL_AMERICAS}/lol/match/v5/matches/${responseMatchIds.data[8]}`;
-        // let URL10 = `${process.env.LOL_URL_AMERICAS}/lol/match/v5/matches/${responseMatchIds.data[9]}`;
-
-        // const fetchURL = (url) => axios.get(url,
-        //     {
-        //         headers: { 'X-Riot-Token': process.env.LOL_KEY }
-        //     });
-
-        // const promiseArray = [URL1, URL2, URL3, URL4, URL5, URL6, URL7, URL8, URL9, URL10].map(fetchURL);
-
-        // Promise.all(promiseArray)
-        //     .then((data) => {
-        //         console.log(data[9].data.info.participants.filter(p => p.puuid === puuid))
-        //     })
-        //     .catch((err) => {
-        //     });
-
 
         for (let i = 0; i < 10; i++) {
             const responseLastMatchs = await axios.get(`${process.env.LOL_URL_AMERICAS}/lol/match/v5/matches/${responseMatchIds.data[i]}`,
@@ -193,7 +140,6 @@ app.get('/summoner/:summonerName', async (req, res) => {
         vitoria,
         summonerLevel,
         iconUrl: `${process.env.LOL_ICONS}/${profileIconId}.png`,
-        ligas,
         dadosPartida,
         // winrate: wins ? ((wins / (wins * losses)) * 100).toFixed(1) : ""
     })
