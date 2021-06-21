@@ -33,36 +33,6 @@ export default function Member({ nick, name }) {
   }
 
   return (
-    // <div>
-    //   <h1>{name}</h1>
-    //   <h1>{nick.summonerLevel}</h1>
-    //   <img src={nick.iconUrl} alt="" />
-    //   <div>
-    //     <span>ligas</span>
-    //     {nick.l0 ? (
-    //       <div>
-    //         <h1>{nick.l0[0].tier + " " + nick.l0[0].rank}</h1>
-    //         <Image src={`/${nick.l0[0].tier}.png`} width={500}
-    //           height={500} />
-
-    //       </div>
-    //     ) : (
-    //       <h1>no rank solo</h1>
-    //     )}
-
-    //     {nick.l1 ? (
-    //       <div>
-    //         <h1>{nick.l1[0].tier + " " + nick.l1[0].rank}</h1>
-    //         <Image src={`/${nick.l1[0].tier}.png`} width={500}
-    //           height={500} />
-
-    //       </div>
-    //     ) : (
-    //       <h1>no rank flex</h1>
-    //     ) }
-    //   </div>
-
-    // </div>
     <Container>
       <div className="profile">
         <div className="primary">
@@ -77,7 +47,7 @@ export default function Member({ nick, name }) {
             <h3>Ranqueada Solo</h3>
             <div>
               {
-                nick.l0.length ? (
+                nick.l0 ? (
                   <>
                     <Image src={`/${nick.l0[0].tier}.png`} width={500} height={500} />
                     <div>
@@ -101,7 +71,7 @@ export default function Member({ nick, name }) {
             <h3>Ranqueada Solo</h3>
             <div>
               {
-                nick.l1.length ? (
+                nick.l1 ? (
                   <>
                     <Image src={`/${nick.l1[0].tier}.png`} width={500} height={500} />
                     <div>
