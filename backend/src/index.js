@@ -2,8 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const { json, response } = require("express");
 const axios = require("axios");
-require("dotenv").config();
 
+require("dotenv").config();
 const app = express();
 
 app.use(json());
@@ -86,7 +86,6 @@ app.get('/summoner/:summonerName', async (req, res) => {
 
       const particpant = responseLastMatchs.data.info.participants.filter(p => p.puuid === puuid)
 
-
       const { 
         win, 
         championName,
@@ -108,13 +107,13 @@ app.get('/summoner/:summonerName', async (req, res) => {
 
       let itens = [];
       itens.push(
-        { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item0}.png` },
-        { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item1}.png` },
-        { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item2}.png` },
-        { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item3}.png` },
-        { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item4}.png` },
-        { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item5}.png` },
-        { item: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/item/${item6}.png` }
+        { item: `https://ddragon.leagueoflegends.com/cdn/11.9.1/img/item/${item0}.png` },
+        { item: `https://ddragon.leagueoflegends.com/cdn/11.9.1/img/item/${item1}.png` },
+        { item: `https://ddragon.leagueoflegends.com/cdn/11.9.1/img/item/${item2}.png` },
+        { item: `https://ddragon.leagueoflegends.com/cdn/11.9.1/img/item/${item3}.png` },
+        { item: `https://ddragon.leagueoflegends.com/cdn/11.9.1/img/item/${item4}.png` },
+        { item: `https://ddragon.leagueoflegends.com/cdn/11.9.1/img/item/${item5}.png` },
+        { item: `https://ddragon.leagueoflegends.com/cdn/11.9.1/img/item/${item6}.png` }
 
       )
       dadosPartida.push({
@@ -125,7 +124,7 @@ app.get('/summoner/:summonerName', async (req, res) => {
         gameMinuteDuration,
         win,
         championName,
-        championIcon: `https://ddragon.leagueoflegends.com/cdn/11.7.1/img/champion/${championName}.png`,
+        championIcon: `https://ddragon.leagueoflegends.com/cdn/11.9.1/img/champion/${championName}.png`,
         kills,
         deaths,
         assists,
