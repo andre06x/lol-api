@@ -20,7 +20,6 @@ export default function Home() {
   return (
     <div >
       <Head>
-        <title>A</title>
         {<style>{`body {background: #5383E8}`}</style>}
       </Head>
       <Container loading={loading}>

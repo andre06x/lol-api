@@ -14,6 +14,7 @@ export default class MyDocument extends Document {
     return (
       <Html>
         <Head>
+          <title>OP.GG</title>
           {<style>{
             `body {background: #5383E8}
             *{ box-sizing: border-box }
@@ -30,6 +31,7 @@ a {
 }`
           }</style>}
         </Head>
+        <link rel="icon" type="image/png" href="https://opgg-static.akamaized.net/icon/reverse.rectangle.png"/>
         <body>
           <Main />
           <NextScript />

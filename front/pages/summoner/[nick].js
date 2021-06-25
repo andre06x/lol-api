@@ -1,20 +1,26 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Document, { Head } from 'next/document';
 import Image from 'next/image';
+
 import axios from 'axios';
-import { lightsalmon } from 'color-name';
 
 import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
-
-import { Container, SecundaryProfile, KDA, LastMatchs, LastMatchMap, LastMatchItem } from './styles';
 import { ChartDonut } from '@patternfly/react-charts';
 
+import {
+  Container,
+  SecundaryProfile,
+  KDA,
+  LastMatchs,
+  LastMatchMap,
+  LastMatchItem
+} from './styles';
 
 export default function Member({ nick, name }) {
   const [data, setData] = useState(false);
   const { isFallback } = useRouter();
-  const router = useRouter();
 
   useEffect(() => {
     if (nick) {
@@ -24,8 +30,7 @@ export default function Member({ nick, name }) {
           console.log(response.data)
           setData(response.data);
         })
-    }
-
+    };
   }, [nick])
 
   if (isFallback) {
@@ -44,15 +49,18 @@ export default function Member({ nick, name }) {
         </div>
         <SecundaryProfile>
           <div>
-            <h3>Ranqueada Solo</h3>
+            <h4>Ranqueada Solo</h4>
             <div>
               {
                 nick.l0 ? (
                   <>
                     <Image src={`/${nick.l0[0].tier}.png`} width={500} height={500} />
                     <div>
-                      <span>Ranqueada Solo</span>
                       <span>{nick.l0[0].tier + " " + nick.l0[0].rank}</span>
+                      <span style={{fontSize: '10px'}}>
+                        <b style={{}}>{nick.l0[0].leaguePoints} LP </b>/
+                        {`${nick.l0[0].wins} / ${nick.l0[0].losses}`}
+                      </span>
                     </div>
                   </>
                 ) : (
@@ -68,22 +76,22 @@ export default function Member({ nick, name }) {
             </div>
           </div>
           <div>
-            <h3>Ranqueada Solo</h3>
+            <h4>Ranqueada Flex 5x5</h4>
             <div>
               {
                 nick.l1 ? (
                   <>
                     <Image src={`/${nick.l1[0].tier}.png`} width={500} height={500} />
                     <div>
-                      <span>Ranqueada Solo</span>
                       <span>{nick.l1[0].tier + " " + nick.l1[0].rank}</span>
+                      <span>Ranqueada Solo</span>
                     </div>
                   </>
                 ) : (
                   <>
                     <img src="https://opgg-static.akamaized.net/images/medals/default.png?image=q_auto:best&v=1" alt="" />
                     <div>
-                      <span>Ranqueada Solo</span>
+                      <span>Ranqueada Flex 5x5</span>
                       <span>Unranked</span>
                     </div>
                   </>
@@ -100,12 +108,9 @@ export default function Member({ nick, name }) {
             <>
               <div style={{ height: '230px', width: '170px' }}>
                 <ChartDonut
-                  ariaDesc="Average number of pets"
-                  ariaTitle="Donut chart example"
                   constrainToVisibleArea={true}
-                  data={[{ x: 'Cats', y: data.vitoria }, { x: 'Dogs', y: 10 - data.vitoria }]}
+                  data={[{ x: 'Vitoria', y: data.vitoria }, { x: 'Derrota', y: 10 - data.vitoria }]}
                   labels={({ datum }) => `${datum.x + '0'}: ${datum.y + '0'}%`}
-                  // legendData={[{ name: 'Cats: 35' }, { name: 'Dogs: 55' }, { name: 'Birds: 10' }]}
                   legendOrientation="vertical"
                   legendPosition="right"
                   subTitle="Vitoria"
@@ -129,14 +134,10 @@ export default function Member({ nick, name }) {
                 <br />
                 <Typography>.</Typography>
               </Skeleton>
-
             </>
-
           )
         }
-
       </KDA>
-
       <LastMatchs>
         {data ? (
           data.dadosPartida.map(d => (
@@ -162,7 +163,7 @@ export default function Member({ nick, name }) {
 
               <LastMatchItem>
                 {d.itens.map(d => (
-                  <img src={d.item} alt="" width="30" height="30"/>
+                  <img src={d.item == "https://ddragon.leagueoflegends.com/cdn/11.9.1/img/item/0.png" ? "https://opgg-static.akamaized.net/images/pattern/opacity.1.png" : d.item} alt="" width="30" height="30"/>
                 ))}
               </LastMatchItem>
             </LastMatchMap>

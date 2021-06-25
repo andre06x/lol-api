@@ -6,7 +6,7 @@ export const Container = styled.div`
   background: #fff;
   padding: 80px;
 
-  h1,h2,h3 {
+  h1,h2,h3,h4 {
     margin: 0;
   }
 
@@ -63,6 +63,7 @@ export const SecundaryProfile = styled.div`
 
   div div div {
     flex-direction: column;
+    /* margin: 0px 10px; */
   }
 `
 
@@ -119,4 +120,6 @@ export const LastMatchItem = styled.div`
   flex-grow: 3;
   flex-wrap: wrap;
   margin: 0 40px;
+
+
 `;
