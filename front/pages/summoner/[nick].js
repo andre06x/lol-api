@@ -53,7 +53,7 @@ export default function Member({ nick, name }) {
               {
                 nick.l0 ? (
                   <>
-                    <Image src={`/${nick.l0[0].tier}.png`} width={500} height={500} />
+                    <Image src={`/${nick.l0[0].tier.toLowerCase()}.png`} width={500} height={500} />
                     <div>
                       <span>{nick.l0[0].tier + " " + nick.l0[0].rank}</span>
                       <span style={{fontSize: '10px'}}>
@@ -80,7 +80,7 @@ export default function Member({ nick, name }) {
               {
                 nick.l1 ? (
                   <>
-                    <Image src={`/${nick.l1[0].tier}.png`} width={500} height={500} />
+                    <Image src={`/${nick.l1[0].tier.toLowerCase()}.png`} width={500} height={500} />
                     <div>
                       <span>{nick.l1[0].tier + " " + nick.l1[0].rank}</span>
                       <span>Ranqueada Solo</span>
