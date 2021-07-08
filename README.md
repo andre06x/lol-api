@@ -21,3 +21,4 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 ## 💻 Projeto
 
 Lol-api é um projeto feito para consultar nivel, elo, ultimas partidas e winrate do jogador. </br>
+Após a primeira consulta é gerada uma página estática com next.js
