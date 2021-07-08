@@ -23,12 +23,7 @@ export default function Member({ nick, name }) {
 
   useEffect(() => {
     if (nick) {
-      console.log(nick)
-      axios.get(`http://localhost:3333/summoner/${name}`)
-        .then((response) => {
-          console.log(response.data)
-          setData(response.data);
-        })
+      setData(nick)
     };
   }, [nick])
 
@@ -175,8 +170,6 @@ export default function Member({ nick, name }) {
           </>
         )}
       </LastMatchs>
-
-
     </Container>
   )
 }
@@ -198,9 +191,8 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (context) => {
   const { nick } = context.params;
 
-  const response = await fetch(`http://localhost:3333/summonner/${nick}`);
+  const response = await fetch(`http://localhost:3333/summoner/${nick}`);
   const data = await response.json();
-  console.log(data);
 
   return {
     props: {
