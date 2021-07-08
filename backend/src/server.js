@@ -10,6 +10,6 @@ const app = express();
 
 app.use(json());
 app.use(cors());
-app.listen(3333);
 
 app.use(Router);
+app.listen(3333);
