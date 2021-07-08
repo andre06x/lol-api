@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-<img  src="./preview.gif"/>
+<img  src="./preview2.gif"/>
 </p>
 
 <h1 id="tecnologias"> 🚀 Tecnologias</h1>
