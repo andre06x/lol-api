@@ -9,8 +9,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 import { ChartDonut } from '@patternfly/react-charts';
 
-import {
-  Container,
+import Container, {
   SecundaryProfile,
   KDA,
   LastMatchs,
